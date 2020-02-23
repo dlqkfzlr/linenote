@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">LineNote</string>
+
+    <!-- fragment_memo -->
+    <string name="add_memo_title">제목</string>
+    <string name="add_memo_desc">본문</string>
+    <string name="add_memo_desc_hint">내용을 입력해주세요</string>
+
+    <!--dialog_image-->
+    <string name="select_camera">카메라</string>
+    <string name="select_gallery">갤러리</string>
+    <string name="select_url">외부이미지 url입력</string>
+</resources>
