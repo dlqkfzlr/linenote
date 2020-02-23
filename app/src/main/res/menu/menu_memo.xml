@@ -6,4 +6,9 @@
         android:id="@+id/delete"
         />
 
+    <item
+        android:title="이미지 선택"
+        android:id="@+id/img_select"
+        />
+
 </menu>

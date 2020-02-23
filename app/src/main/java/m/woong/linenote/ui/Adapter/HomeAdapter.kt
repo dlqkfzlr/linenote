@@ -16,6 +16,7 @@ import m.woong.linenote.ui.home.HomeFragmentDirections
 import m.woong.linenote.ui.memo.MemoFragment.Companion.IMAGE_DIRECTORY
 import java.io.File
 
+
 class HomeAdapter (private val memos: List<Memo>) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
@@ -45,6 +46,7 @@ class HomeAdapter (private val memos: List<Memo>) : RecyclerView.Adapter<HomeAda
             action.memo = memos[position]
             Navigation.findNavController(it).navigate(action)
         }
+
     }
 
     fun loadImage(imageView: ImageView, imagePath: String){
@@ -72,6 +74,8 @@ class HomeAdapter (private val memos: List<Memo>) : RecyclerView.Adapter<HomeAda
         }
 
     }
+
+
 
     class HomeViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 }

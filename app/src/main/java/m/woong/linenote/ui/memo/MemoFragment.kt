@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -17,7 +16,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.content.FileProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -41,32 +39,28 @@ import kotlin.collections.ArrayList
 
 class MemoFragment  : BaseFragment() {
 
-    //private val fragment : MemoFragment = MemoFragment()
-
     private var memo: Memo? = null
     val REQUEST_TAKE_PHOTO = 1
     val REQUEST_GET_GALLERY = 2
-    private val img_list : ArrayList<String> = ArrayList<String>()
+    private val img_list : ArrayList<String> = ArrayList()
     lateinit var currentPhotoPath: String
     lateinit var currentPhotoName: String
 
     companion object {
-        val IMAGE_DIRECTORY = "/Android/data/m.woong.linenote/files/Pictures"
+        val IMAGE_DIRECTORY = "/Android/data/m.woong.linenote/files/Pictures"       // 이미지 내부저장 경로
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         setHasOptionsMenu(true)
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_memo, container, false)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.delete -> if (memo != null) deleteNote() else activity!!.toast("삭제할 메모가 없습니다.")
+            R.id.delete -> if (memo != null) deleteMemo() else activity!!.toast("삭제할 메모가 없습니다.")
         }
         return super.onOptionsItemSelected(item)
     }
@@ -83,7 +77,7 @@ class MemoFragment  : BaseFragment() {
         arguments?.let {
             memo = MemoFragmentArgs.fromBundle(it).memo
             edit_text_title.setText(memo?.title)
-            edit_text_note.setText(memo?.desc)
+            edit_text_desc.setText(memo?.desc)
 
         }
         // 첨부이미지 RecyclerView
@@ -118,7 +112,7 @@ class MemoFragment  : BaseFragment() {
         button_save.setOnClickListener { view ->
 
             val memoTitle = edit_text_title.text.toString().trim()
-            val memoDesc = edit_text_note.text.toString().trim()
+            val memoDesc = edit_text_desc.text.toString().trim()
 
             if (memoTitle.isEmpty()) {
                 edit_text_title.error = "제목을 입력해주세요"
@@ -127,8 +121,8 @@ class MemoFragment  : BaseFragment() {
             }
 
             if (memoDesc.isEmpty()) {
-                edit_text_note.error = "내용을 입력해주세요"
-                edit_text_note.requestFocus()
+                edit_text_desc.error = "내용을 입력해주세요"
+                edit_text_desc.requestFocus()
                 return@setOnClickListener
             }
 
@@ -166,7 +160,7 @@ class MemoFragment  : BaseFragment() {
 
     }
 
-    private fun deleteNote() {
+    private fun deleteMemo() {
         AlertDialog.Builder(context).apply {
             setTitle("작성 중인 메모를 삭제하시겠습니까?")
             setMessage("삭제하면 다시 복구할 수 없습니다.")
@@ -186,35 +180,31 @@ class MemoFragment  : BaseFragment() {
 
     private fun showPictureDialog() {
         val pictureDialog = androidx.appcompat.app.AlertDialog.Builder(context!!)
-        pictureDialog.setTitle("이미지 첨부방식 선택")
         val pictureDialogItems = arrayOf("카메라", "갤러리", "외부이미지 url")
-        pictureDialog.setItems(pictureDialogItems
-        ) { dialog, which ->
-            when (which) {
-                0 -> takePictureFromCamera()
-                1 -> getImageFromGallery()
-                2 -> showEditTextDialog()
-            }
-        }
-        pictureDialog.show()
+        pictureDialog.setTitle("이미지 첨부방식 선택")
+                    .setItems(pictureDialogItems
+                    ) { dialog, which ->
+                        when (which) {
+                            0 -> takePictureFromCamera()
+                            1 -> getImageFromGallery()
+                            2 -> showEditTextDialog()
+                        }
+                    }
+                    .show()
     }
-
-
 
 
     // 방법1)) 직접 카메라로 촬영해서 이미지 가져옴
     private fun takePictureFromCamera() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            // Ensure that there's a camera activity to handle the intent
             takePictureIntent.resolveActivity(context!!.packageManager)?.also {
-                // Create the File where the photo should go
+                // 사진이 저장될 파일을 미리 생성
                 val photoFile: File? = try {
                     createImageFile()
-                } catch (ex: IOException) {
-                    // Error occurred while creating the File
+                } catch (ex: IOException) { // 파일생성시 에러발생
                     null
                 }
-                // Continue only if the File was successfully created
+                // 파일이 성공적으로 생성될때만 작업을 계속 진행함
                 photoFile?.also {
                     val photoURI: Uri = FileProvider.getUriForFile(context!!, context!!.packageName, it)
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
@@ -227,7 +217,6 @@ class MemoFragment  : BaseFragment() {
     // 방법2)) 갤러리에서 이미지 가져옴
     private fun getImageFromGallery(){
         Intent(Intent.ACTION_PICK).also { getGalleryIntent ->
-            // Ensure that there's a camera activity to handle the intent
             getGalleryIntent.setType("image/*")
             startActivityForResult(getGalleryIntent, REQUEST_GET_GALLERY)
         }
@@ -239,29 +228,26 @@ class MemoFragment  : BaseFragment() {
     private fun showEditTextDialog(){
         val etDialog = androidx.appcompat.app.AlertDialog.Builder(context!!)
         val urlInput = EditText(context!!)
-        val urlImageView = ImageView(context!!)
         etDialog.setTitle("외부이미지 url을 입력해주세요")
-            .setView(urlInput)
-            .setPositiveButton("입력") { dialogInterface, i ->
-                val imageUrl = urlInput.text.toString()
-                showUrlImageDialog(imageUrl)
-            }
-            .setNegativeButton("취소") { dialogInterface, i ->
+                .setView(urlInput)
+                .setPositiveButton("입력") { dialogInterface, i ->
+                    val imageUrl = urlInput.text.toString()
+                    showUrlImageDialog(imageUrl)
+                }
+                .setNegativeButton("취소") { dialogInterface, i ->
 
-            }
-            .show()
+                }
+                .show()
     }
 
-    // 외부 url을 입력하기 위한 Dialog
+    // 외부url 이미지를 확인하기 위한 Dialog
     private fun showUrlImageDialog(imageUrl : String?){
         val urlImageView = ImageView(context!!)
-        //var errorMsg : String? = ""
         var error = false
         Glide.with(this)
             .load(imageUrl)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: Boolean): Boolean {
-                    //toast("잘못된 이미지 주소입니다.")
                     error = true
                     return false
                 }
@@ -291,7 +277,6 @@ class MemoFragment  : BaseFragment() {
                 showEditTextDialog()
             }
             .show()
-
     }
 
     /*
@@ -321,8 +306,7 @@ class MemoFragment  : BaseFragment() {
         myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
         val imageDirectory = File(
             (Environment.getExternalStorageDirectory()).toString() + IMAGE_DIRECTORY)
-        // have the object build the directory structure, if needed.
-        Log.d("fee",imageDirectory.toString())
+        // 해당 디렉토리가 없으면 생성해줌
         if (!imageDirectory.exists())
         {
             imageDirectory.mkdirs()
@@ -351,14 +335,13 @@ class MemoFragment  : BaseFragment() {
     }
 
 
-
+    // 이미지 Callback Method
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
             when(requestCode){
                 REQUEST_TAKE_PHOTO -> {
-                    //val thumbnail = BitmapFactory.decodeFile(currentPhotoPath)
                     // 첨부이미지 RecyclerView를 구성하는 배열에 추가할 것
                     img_list.add(currentPhotoName)
                     Log.d("이미지배열", "$img_list")
