@@ -2,6 +2,9 @@ package m.woong.linenote.data.db
 
 import androidx.room.*
 
+/*
+ * MemoDao를 통해 메모장의 내용을 CRUD 가능
+ */
 @Dao
 interface MemoDao {
 

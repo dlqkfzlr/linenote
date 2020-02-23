@@ -37,14 +37,17 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
+/*
+ * 특정 메모를 편집하거나 새로운 메모를 작성할 수 있는 MemoFragment
+ */
 class MemoFragment  : BaseFragment() {
 
     private var memo: Memo? = null
-    val REQUEST_TAKE_PHOTO = 1
-    val REQUEST_GET_GALLERY = 2
-    private val img_list : ArrayList<String> = ArrayList()
-    lateinit var currentPhotoPath: String
-    lateinit var currentPhotoName: String
+    val REQUEST_TAKE_PHOTO = 1                                  // Camera 인텐트
+    val REQUEST_GET_GALLERY = 2                                 // Gallery 인텐트
+    private val img_list : ArrayList<String> = ArrayList()      // 첨부이미지 파일명을 저장하는 ArrayList
+    lateinit var currentPhotoPath: String                       // Camera로 촬영한 이미지 파일경로
+    lateinit var currentPhotoName: String                       // Camera로 촬영한 이미지 파일명
 
     companion object {
         val IMAGE_DIRECTORY = "/Android/data/m.woong.linenote/files/Pictures"       // 이미지 내부저장 경로
@@ -344,6 +347,7 @@ class MemoFragment  : BaseFragment() {
                 REQUEST_TAKE_PHOTO -> {
                     // 첨부이미지 RecyclerView를 구성하는 배열에 추가할 것
                     img_list.add(currentPhotoName)
+                    rv_pic.adapter!!.notifyDataSetChanged()
                     Log.d("이미지배열", "$img_list")
                 }
                 REQUEST_GET_GALLERY -> {

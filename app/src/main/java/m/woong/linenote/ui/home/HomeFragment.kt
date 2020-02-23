@@ -11,6 +11,9 @@ import m.woong.linenote.data.db.MemoDatabase
 import m.woong.linenote.ui.Adapter.HomeAdapter
 import m.woong.linenote.ui.BaseFragment
 
+/*
+ * 전체 메모를 볼 수 있는 HomeFragment
+ */
 class HomeFragment : BaseFragment() {
 
     override fun onCreateView(
@@ -31,9 +34,15 @@ class HomeFragment : BaseFragment() {
         // Coroutine으로 모든 Memo를 조회함
         launch {
             context?.let{
-                val notes = MemoDatabase(it).getMemoDao().getAllMemos()
-                recycler_view_notes.adapter =
-                    HomeAdapter(notes)
+                val memos = MemoDatabase(it).getMemoDao().getAllMemos()
+                if (!memos.isEmpty()){
+                    tv_empty.visibility = View.GONE
+                    recycler_view_notes.adapter =
+                        HomeAdapter(memos)
+                } else {
+                    // 작성된 메모가 없음
+                    tv_empty.visibility = View.VISIBLE
+                }
             }
         }
 

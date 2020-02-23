@@ -13,6 +13,10 @@ import m.woong.linenote.R
 import m.woong.linenote.ui.memo.MemoFragment.Companion.IMAGE_DIRECTORY
 import java.io.File
 
+/*
+ * 메모 작성 및 편집 시,
+ * 첨부이미지 RecyclerView에 부착되는 Adapter
+ */
 class MemoAdapter (private val images: ArrayList<String>) : RecyclerView.Adapter<MemoAdapter.MemoViewHolder>(){
 
     private val TAG = "MemoAdapter"
@@ -28,8 +32,10 @@ class MemoAdapter (private val images: ArrayList<String>) : RecyclerView.Adapter
 
     override fun onBindViewHolder(holder: MemoViewHolder, position: Int) {
 
+        // 해당 메모의 첨부이미지를 Glide를 통해 화면에 보여줌
         loadImage(holder.view.iv_attach, images[position])
 
+        // 해당 뷰를 롱클릭시 삭제가능한 Dialog를 띄워줌
         holder.view.setOnLongClickListener {
             deleteImage(position, it)
             return@setOnLongClickListener true
@@ -37,7 +43,7 @@ class MemoAdapter (private val images: ArrayList<String>) : RecyclerView.Adapter
 
     }
 
-    fun loadImage(imageView: ImageView, imagePath: String){
+    private fun loadImage(imageView: ImageView, imagePath: String){
         if (imagePath.contains("//")) {   // 외부이미지
             Glide.with(imageView.context)
                 .load(imagePath)
@@ -45,7 +51,7 @@ class MemoAdapter (private val images: ArrayList<String>) : RecyclerView.Adapter
                 .fitCenter()
                 .error(R.drawable.ic_error)
                 .into(imageView)
-        } else {                // 내부저장이미지
+        } else {                                // 내부저장이미지
             val file = File(
                 Environment.getExternalStoragePublicDirectory(IMAGE_DIRECTORY),
                 imagePath
@@ -63,17 +69,18 @@ class MemoAdapter (private val images: ArrayList<String>) : RecyclerView.Adapter
 
     class MemoViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
+    // 해당 첨부이미지를 삭제하는 Method
     private fun deleteImage(pos: Int, view: View){
         val deleteDialog = androidx.appcompat.app.AlertDialog.Builder(view.context)
         deleteDialog.setTitle("해당 이미지 삭제하시겠습니까?")
-            .setPositiveButton("예") { dialogInterface, i ->
-                images.removeAt(pos)
-                Log.d(TAG, images.toString())
-                this.notifyDataSetChanged()
-            }
-            .setNegativeButton("아니오") { dialogInterface, i ->
-            }
-            .show()
+                    .setPositiveButton("예") { dialogInterface, i ->
+                        images.removeAt(pos)
+                        Log.d(TAG, images.toString())
+                        this.notifyDataSetChanged()
+                    }
+                    .setNegativeButton("아니오") { dialogInterface, i ->
+                    }
+                    .show()
 
     }
 
