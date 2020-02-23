@@ -151,11 +151,8 @@ class MemoFragment  : BaseFragment() {
                         it.toast("메모를 수정했습니다.")
                     }
 
-
-                    val action =
-                        MemoFragmentDirections.actionSaveMemo()
+                    val action = MemoFragmentDirections.actionSaveMemo()
                     Navigation.findNavController(view).navigate(action)
-                    // TODO Fragmnet 종료 추가해야함
                 }
             }
 
