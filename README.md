@@ -21,7 +21,7 @@ ScreenShots
 
 App정보
 -------
-언어: Kotlin 
+언어: Kotlin   
 주요라이브러리: Glide, Room, Navigation
 
 
