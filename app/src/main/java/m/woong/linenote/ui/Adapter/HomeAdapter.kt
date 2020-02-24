@@ -1,7 +1,12 @@
 package m.woong.linenote.ui.Adapter
 
+/*
+ * Glide 라이브러리 사용
+ * An image loading and caching library for Android focused on smooth scrolling
+ * https://github.com/bumptech/glide
+ */
+
 import android.os.Environment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +40,6 @@ class HomeAdapter (private val memos: List<Memo>) : RecyclerView.Adapter<HomeAda
         holder.view.tv_title.text = memos[position].title
         holder.view.tv_note.text = memos[position].desc
         val thumbnail = memos[position].image
-        Log.d("memo 데이터", memos[position].toString())
         if (thumbnail.equals("")){  // 첨부 이미지가 없는 메모의 경우, ImageView를 사라지게함.
             holder.view.iv_thumbnail.visibility = View.GONE
         } else {                            // 첨부 이미지가 존재하는 메모의 경우, 첫 이미지를 썸네일로 채택함.
@@ -59,7 +63,6 @@ class HomeAdapter (private val memos: List<Memo>) : RecyclerView.Adapter<HomeAda
      */
     fun loadImage(imageView: ImageView, imagePath: String){
         if (imagePath.contains("//")) {   // 외부이미지
-            Log.d("썸네일", "외부이미지")
             Glide.with(imageView.context)
                 .load(imagePath)
                 .override(400,400)
@@ -67,7 +70,6 @@ class HomeAdapter (private val memos: List<Memo>) : RecyclerView.Adapter<HomeAda
                 .error(R.drawable.ic_error)
                 .into(imageView)
         } else {                // 내부저장이미지
-            Log.d("썸네일", "내부이미지")
             val file = File(
                 Environment.getExternalStoragePublicDirectory(IMAGE_DIRECTORY),
                 imagePath

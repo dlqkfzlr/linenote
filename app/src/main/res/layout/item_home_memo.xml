@@ -63,7 +63,7 @@
         <TextView
                 android:id="@+id/tv_note"
                 android:layout_width="180dp"
-                android:layout_height="33dp"
+                android:layout_height="34dp"
                 android:letterSpacing="-0.02"
                 android:lineSpacingExtra="-3dp"
                 android:textColor="#9ea5ae"

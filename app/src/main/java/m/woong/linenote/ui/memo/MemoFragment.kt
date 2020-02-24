@@ -287,7 +287,6 @@ class MemoFragment  : BaseFragment() {
                     // 첨부이미지 RecyclerView를 구성하는 배열에 추가할 것
                     img_list.add(imageUrl!!)
                     rv_pic.adapter!!.notifyDataSetChanged()
-                    Log.d("이미지배열", "$img_list")
                 }
             }
             .setNegativeButton("다시찍기") { dialogInterface, i ->
@@ -331,7 +330,6 @@ class MemoFragment  : BaseFragment() {
 
         try
         {
-            Log.d("기본저장경로",imageDirectory.toString())
             val f = File(imageDirectory, ((Calendar.getInstance()
                 .getTimeInMillis()).toString() + ".jpg"))
             f.createNewFile()
@@ -362,21 +360,18 @@ class MemoFragment  : BaseFragment() {
                     // 첨부이미지 RecyclerView를 구성하는 배열에 추가할 것
                     img_list.add(currentPhotoName)
                     rv_pic.adapter!!.notifyDataSetChanged()
-                    Log.d("이미지배열", "$img_list")
                 }
                 REQUEST_GET_GALLERY -> {
                     if (data != null){
                         val contentURI = data!!.data
                         try {
                             val bitmap = MediaStore.Images.Media.getBitmap( context!!.contentResolver, contentURI)
-                            Log.d("경로", contentURI.toString())
                             val path = saveImage(bitmap)
                             // 첨부이미지 RecyclerView를 구성하는 배열에 추가할 것
                             val pathlist = path.split("/")
                             val name = pathlist[pathlist.size-1]
                             img_list.add(name)
                             rv_pic.adapter!!.notifyDataSetChanged()
-                            Log.d("이미지배열", "$img_list")
                         }catch (e: IOException){
                             e.printStackTrace()
                         }

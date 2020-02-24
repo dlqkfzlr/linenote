@@ -1,5 +1,11 @@
 package m.woong.linenote.ui.Adapter
 
+/*
+ * Glide 라이브러리 사용
+ * An image loading and caching library for Android focused on smooth scrolling
+ * https://github.com/bumptech/glide
+ */
+
 import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
