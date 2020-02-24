@@ -2,6 +2,7 @@ package m.woong.linenote.ui.memo
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -12,9 +13,11 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -74,9 +77,11 @@ class MemoFragment  : BaseFragment() {
         inflater.inflate(R.menu.menu_memo, menu)
     }
 
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        // HomeFragment로부터 argument를 받는 코드
         arguments?.let {
             memo = MemoFragmentArgs.fromBundle(it).memo
             edit_text_title.setText(memo?.title)
@@ -88,6 +93,7 @@ class MemoFragment  : BaseFragment() {
         rv_pic.setHasFixedSize(true)
         rv_pic.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
+        // 편집의 경우 해당 메모의 첨부이미지를 불러오는 코드
         launch {
             context?.let{
                 if (memo == null) {
@@ -151,6 +157,9 @@ class MemoFragment  : BaseFragment() {
                         it.toast("메모를 수정했습니다.")
                     }
 
+                    // softKeyBoard를 숨기는 코드
+                    view.context.hideKeyboard(view)
+
                     val action = MemoFragmentDirections.actionSaveMemo()
                     Navigation.findNavController(view).navigate(action)
                 }
@@ -160,6 +169,13 @@ class MemoFragment  : BaseFragment() {
 
     }
 
+    // softKeyBoard를 숨기는 Method
+    fun Context.hideKeyboard(view: View) {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    // 해당 메모를 삭제하는 Method
     private fun deleteMemo() {
         AlertDialog.Builder(context).apply {
             setTitle("작성 중인 메모를 삭제하시겠습니까?")
@@ -178,6 +194,7 @@ class MemoFragment  : BaseFragment() {
         }.create().show()
     }
 
+    // 이미지를 첨부하는 방법선택 Dialog를 띄워주는 Method
     private fun showPictureDialog() {
         val pictureDialog = androidx.appcompat.app.AlertDialog.Builder(context!!)
         val pictureDialogItems = arrayOf("카메라", "갤러리", "외부이미지 url")

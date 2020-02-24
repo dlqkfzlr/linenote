@@ -54,7 +54,7 @@ class HomeAdapter (private val memos: List<Memo>) : RecyclerView.Adapter<HomeAda
 
     /*
      * 크게 두가지로 나눠서 Image를 로드함
-     * 1) 문자열'//'가 포함될 경우 외부이미지url이므로 해당 경로 그대로 이미지를 불러옴
+     * 1) 문자열'//'가 포함될 경우 외부이미지url이므로 해당 url경로 그대로 이미지를 불러옴
      * 2) 그외의 경우 내부이미지로 간주하여 내부저장소경로에서 이미지 File을 불러옴
      */
     fun loadImage(imageView: ImageView, imagePath: String){
@@ -63,7 +63,7 @@ class HomeAdapter (private val memos: List<Memo>) : RecyclerView.Adapter<HomeAda
             Glide.with(imageView.context)
                 .load(imagePath)
                 .override(400,400)
-                .fitCenter()
+                .centerCrop()
                 .error(R.drawable.ic_error)
                 .into(imageView)
         } else {                // 내부저장이미지
@@ -75,7 +75,7 @@ class HomeAdapter (private val memos: List<Memo>) : RecyclerView.Adapter<HomeAda
             Glide.with(imageView.context)
                 .load(file)
                 .override(400,400)
-                .fitCenter()
+                .centerCrop()
                 .error(R.drawable.ic_error)
                 .into(imageView)
 

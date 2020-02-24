@@ -47,8 +47,8 @@ class MemoAdapter (private val images: ArrayList<String>) : RecyclerView.Adapter
         if (imagePath.contains("//")) {   // 외부이미지
             Glide.with(imageView.context)
                 .load(imagePath)
-                .override(400,400)
-                .fitCenter()
+                .override(600,600)
+                .centerCrop()
                 .error(R.drawable.ic_error)
                 .into(imageView)
         } else {                                // 내부저장이미지
@@ -58,8 +58,8 @@ class MemoAdapter (private val images: ArrayList<String>) : RecyclerView.Adapter
             )
             Glide.with(imageView.context)
                 .load(file)
-                .override(400,400)
-                .fitCenter()
+                .override(600,600)
+                .centerCrop()
                 .error(R.drawable.ic_error)
                 .into(imageView)
 
