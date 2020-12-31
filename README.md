@@ -1,16 +1,17 @@
-# linenote
+## linenote
 
+노트 기능을 구현한 Sample App입니다.
 
+## Language 
+- Kotlin   
 
-App정보
--------
-언어: Kotlin   
-주요라이브러리: Glide, Room, Navigation   
+## Library
+- Glide
+- Room
+- Navigation   
 
+## ScreenShots
 
-
-ScreenShots
------------
 ![Screenshot1](https://user-images.githubusercontent.com/44568146/75122954-8a3de380-56e6-11ea-8f62-e3e10a4b1041.png)
 
 * 아이템을 클릭하여 작성된 메모를 편집.   
